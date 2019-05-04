@@ -208,6 +208,7 @@
     <Compile Include="App_Code\DBBase.cs" />
     <Compile Include="Controllers\EOrgController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\MyanmarITStarController.cs" />
     <Compile Include="Controllers\OwnerController.cs" />
     <Compile Include="Controllers\PublicUserController.cs" />
     <Compile Include="Controllers\ShopController.cs" />
@@ -297,6 +298,7 @@
     <Content Include="admin-lte\js\demo.js" />
     <Content Include="admin-lte\js\pages\dashboard.js" />
     <Content Include="admin-lte\js\pages\dashboard2.js" />
+    <Content Include="Content\bootstrap-datepicker.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -477,6 +479,31 @@
     <Content Include="Views\StockShop\AllUnitProduct.cshtml" />
     <Content Include="Views\Shared\StockCentral.cshtml" />
     <Content Include="Views\StockCentral\ShowBranch.cshtml" />
+    <Content Include="Views\StockCentral\ShowAggreement.cshtml" />
+    <Content Include="Views\StockCentral\ShowUsernamePassword.cshtml" />
+    <Content Include="Views\StockCentral\ShowLackPackingProduct.cshtml" />
+    <Content Include="Views\StockCentral\ViewLackPackingProduct.cshtml" />
+    <Content Include="Views\StockCentral\ShowExpiryPackingProduct.cshtml" />
+    <Content Include="Views\StockCentral\ViewExpiryPackingProduct.cshtml" />
+    <Content Include="Views\StockShop\SaleForm.cshtml" />
+    <Content Include="Views\StockShop\NotFound.cshtml" />
+    <Content Include="Views\StockShop\AddExpenseCategory.cshtml" />
+    <Content Include="Views\StockShop\AddExpense.cshtml" />
+    <Content Include="Views\StockShop\SaleForce.cshtml" />
+    <Content Include="Views\StockShop\ExpenseForce.cshtml" />
+    <Content Include="Views\StockShop\ProfitLossForm.cshtml" />
+    <Content Include="Views\StockShop\ExpiryPackingProduct.cshtml" />
+    <Content Include="Views\StockShop\ExpiryUnitProduct.cshtml" />
+    <Content Include="Views\StockShop\EditProductPackingForm.cshtml" />
+    <Content Include="Views\StockShop\EditProductUnitForm.cshtml" />
+    <Content Include="Views\MyanmarITStar\GenerateBarcode.cshtml" />
+    <Content Include="Views\StockShop\PrintBarcode.cshtml" />
+    <Content Include="Views\StockShop\SeeInvoice.cshtml" />
+    <Content Include="Views\StockShop\ProcessSaleForm.cshtml" />
+    <Content Include="Views\Shared\Cashier.cshtml" />
+    <Content Include="Views\StockShop\ShowInvoiceLine.cshtml" />
+    <Content Include="Views\StockShop\SetOnlineShoppingMode.cshtml" />
+    <Content Include="Views\StockShop\WastedProduct.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,0 +1,86 @@
+﻿
+@using EventTicket.App_Code;
+@using System.Data;
+@{
+    ViewBag.Title = "NewProductPackingForm";
+    Layout = "~/Views/Shared/Cashier.cshtml";
+    DataTable todayStock = new DataTable();
+    DataTable expense = new DataTable();
+    StockBase db = new StockBase();
+    int ShopID = Convert.ToInt32(Session["CurrentUserID"]);
+    expense = db.getAllByQuery("select * from ExpenseCategory where ShopID=" + ShopID + " order by Name asc");
+}
+
+@using (Html.BeginForm("ProcessAddExpense", "StockShop"))
+{
+    <p class="zg">
+        <div class="contentHeadBox">
+            <font color="#8B7D6B" class="zg"><b>အသံုးစရိတ္</b> ​ေအာက္​ပါတို႔ကို ျဖည္​့ပါ</font><br /><br />
+            <div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <span class="zg">
+                                <select name="ExpenseCategoryID" class="form-control select2" style="width: 100%;" required>
+                                    <option value="">အမ်ိဳးအစား</option>
+                                    @{
+                                        foreach (DataRow rows in expense.Rows)
+                                        {
+                                            <option value="@rows["ID"]">@rows["Name"]</option>
+                                        }
+                                    }
+                                </select>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <span class="zg"><input type="text" name="Name" placeholder="အမည္​​​" class="form-control" required /></span>
+                    </div>
+                    <div class="col-md-3">
+                        <span class="zg"><input type="number" name="Cost" placeholder="ပမာဏ (က်ပ္​)​​" min="100" class="form-control" required /></span>
+                    </div>
+                </div>
+                <br />
+                <center> <span class="zg"><input type="submit" class="btn btn-primary" value="ထည္​့မည္​" /></span></center>
+            </div>
+
+            <div class="box-body">
+                <font color="#8B7D6B" class="zg"> ထည္​့ထား​ေသာ အသံုးစရိတ္​ ျဖစ္​သည္​​</font><br /><br />
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th style="width: 10px">No</th>
+                            <th> <span class="zg">အမည္​</span></th>
+                            <th><span class="zg">အမ်ိဳးအစား</span></th>
+                            <th>ပမာဏ (က်ပ္​)</th>
+                            <th></th>
+
+                        </tr>
+                        @{
+                            int i = 1;
+                            DataTable Expense = db.getAllByQuery("select * from Expense where ShopID=" + ShopID+" and Date='"+ DateTime.Now.ToString("MM.dd.yyyy")+"'");
+                            foreach (DataRow rows in Expense.Rows)
+                            {
+
+                                <tr>
+                                    <td>@i</td>
+                                    <td>
+                                        <span class="zg"> @rows["Name"] </span>
+                                    </td>
+                                    <td>@db.getStringByQuery("select * from ExpenseCategory where ID="+Convert.ToInt32(rows["ExpenseCategoryID"]),"Name")</td>
+                                    <td>@rows["Cost"]</td>
+                                    <td>
+                                        <a href="/StockShop/DeleteExpense?ID=@rows["ID"]" class="label label-danger">X</a>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </p>
+                                        }

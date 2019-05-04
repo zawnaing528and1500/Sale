@@ -1,0 +1,58 @@
+﻿@using EventTicket.App_Code;
+@using System.Data;
+@{
+    ViewBag.Title = "NewProductPackingForm";
+    Layout = "~/Views/Shared/StockShop.cshtml";
+    DataTable Expense = new DataTable();
+    StockBase db = new StockBase();
+    int ShopID = Convert.ToInt32(Session["CurrentUserID"]);
+}
+
+@using (Html.BeginForm("ProcessAddExpenseCategory", "StockShop"))
+{
+        <div class="contentHeadBox">
+            <font color="#8B7D6B" class="zg"><b>အသံုးစရိတ္​</b> ထည္​့ရန္​​ ​ေအာက္​ပါတို႔ကို ျဖည္​့ပါ</font><br /><br />
+            <div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <span class="zg"><input type="text" name="Name" placeholder="အမည္​ထည္​့ပါ " class="form-control" required /></span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="zg"><input type="submit" class="btn btn-primary" value="ထည္​့မည္" /></span>
+                     </div>
+            </div>
+             </div>
+            </div>
+
+            <div class="box-body">
+                <font color="#8B7D6B" class="zg"> ထည္​့ထား​ေသာ အသံုးစရိတ္​ ေခါင္​းစဥ္ ျဖစ္​သည္​​</font><br /><br />
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th style="width: 10px">No</th>
+                            <th> <span class="zg">အမည္​</span></th>
+                            <th></th>
+
+                        </tr>
+                        @{
+                            int i = 1;
+                            Expense = db.getAllByQuery("select * from ExpenseCategory where ShopID=" + ShopID);
+                            foreach (DataRow rows in Expense.Rows)
+                            {
+
+                                <tr>
+                                    <td>@i</td>
+                                    <td>
+                                        <span class="zg"> @rows["Name"] </span>
+                                    </td>
+                                    <td>
+                                        <a href="/StockShop/DeleteExpenseCategory?ID=@rows["ID"]" class="label label-danger">X</a>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                    </tbody>
+                </table>
+             </div>
+                            }

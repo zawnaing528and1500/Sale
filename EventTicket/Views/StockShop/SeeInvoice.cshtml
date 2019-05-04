@@ -1,0 +1,74 @@
+﻿
+
+@using EventTicket.App_Code;
+@using System.Data;
+@{
+    ViewBag.Title = "See All Invoice";
+    Layout = "~/Views/Shared/Cashier.cshtml";
+    DataTable todayStock = new DataTable();
+    DataTable product = new DataTable();
+    StockBase db = new StockBase();
+    int ShopID = Convert.ToInt32(Session["CurrentUserID"]);
+}
+<div class="contentHeadBox">
+    <div class="box-body">
+        <font color="#8B7D6B" class="zg">​ေရာင္​းရ​ေသာ Invoice မ်ားအားလံုးျဖစ္​ပါသည္​။</font><br /><br />
+        <table id="displayTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width: 10px" class="hidecell">No</th>
+                    <th> <span class="zg">Invoice ID​</span></th>
+                    <th><span class="zg">Total (Kyats)</span></th>
+                    <th class="hidecell"><span class="zg">Date</span></th>
+                    @{
+                        if (db.CheckByQuery("select * from Shop where ID=" + ShopID + "  and OnlineShopping='True'"))
+                        {
+                            <th><span class="zg">Name</span></th>
+                            <th><span class="zg">​Address</span></th>
+                            <th><span class="zg">Phone</span></th>
+                            <th class="hidecell">Township</th>
+                            <th class="hidecell">Delivery Fee (Kyats)</th>
+                        }
+                    }
+                    
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int i = 1;
+                    todayStock = db.getAllByQuery("select * from Invoice where ShopID=" + ShopID + " order by Date desc");
+                    foreach (DataRow rows in todayStock.Rows)
+                    {
+                        <tr>
+                            <td class="hidecell">@i</td>
+                            <td>
+                                <span class="zg"><a href="/StockShop/ShowInvoiceLine?InvoiceID=@rows["ID"]&TotalCost=@rows["TotalCost"]&DeliveryFee=@rows["DeliveryFee"]"> @rows["ID"] </a></span>
+                            </td>
+                            <td>
+                                <span class="zg"> @rows["TotalCost"] </span>
+                            </td>
+                            <td><span class="zg"> @rows["Date"] </span></td>
+                            @{
+                                if (db.CheckByQuery("select * from Shop where ID=" + ShopID + " and OnlineShopping='True'"))
+                                {
+                                    <td><span class="zg">@rows["CustomerName"]</span></td>
+                                    <td><span class="zg">​@rows["CustomerAddress"]</span></td>
+                                    <td><span class="zg">@rows["CustomerPhone"]</span></td>
+                                    <td class="hidecell">@rows["Township"]</td>
+                                    <td class="hidecell">@rows["DeliveryFee"]</td>
+                                }
+                            }
+                        </tr>
+                        i++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@*<script language="javascript">
+    setInterval(function(){
+       window.location.reload(1);
+    }, 5000);
+    </script>*@

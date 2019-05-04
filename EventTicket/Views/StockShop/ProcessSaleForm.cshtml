@@ -1,0 +1,90 @@
+﻿
+@using EventTicket.App_Code;
+@using System.Data;
+@{
+    ViewBag.Title = "Manage";
+    Layout = null;
+    StockBase b = new StockBase();
+    EncryptParameter e = new EncryptParameter();
+    int DeliveryFee = 0;
+    int InvoiceID = Convert.ToInt32(ViewBag.InvoiceID);
+    int Total = b.getIntByQuery("select * from Invoice where ID="+InvoiceID,"TotalCost");
+
+    string Name = ViewBag.Name;
+    string Address = ViewBag.Address;
+    string Phone = ViewBag.Phone;
+    string Township = ViewBag.Township;
+    if(ViewBag.DeliveryFee != null)
+    {
+
+        DeliveryFee = Convert.ToInt32(ViewBag.DeliveryFee);
+    }
+    Total = Total + DeliveryFee;
+    int ShopID = Convert.ToInt32(Session["CurrentUserID"]);
+    DataTable InvoiceLine = b.getAllByQuery("select * from InvoiceLine where InvoiceID="+InvoiceID+" and ShopID="+ShopID);
+
+}
+<link rel="stylesheet" href='https://mmwebfonts.comquas.com/fonts/?font=zawgyi' />
+
+<br />
+<page>
+    <!--
+        
+    Shop Info - Name,Phone,Town,Email
+
+    Product Info - Name, Phone
+
+    Customer Info - Name, SeatName, TicketID, Date, Time
+    -->
+    <center>
+        <div align="center">
+            <table>
+                <tr><td colspan="2"><h3>Shop Info</h3><hr /></td></tr>
+                <tr><td>Name</td><td class="zg">:@b.getStringByQuery("select * from Shop where ID=" + ShopID, "Name")</td></tr>
+                <tr><td>Phone</td><td>:@b.getStringByQuery("select * from Shop where ID=" + ShopID, "Phone")</td></tr>
+            </table>
+            @b.getStringByQuery("select * from Shop where ID=" + ShopID, "Address")
+        </div>
+        <table>
+            <tr><td colspan="2"><h3>Product Info</h3><hr /></td></tr>
+            <tr><td><b>Product</b></td><td><b>Qty</b></td><td><b>Total</b></td></tr>
+                     @{
+                        foreach (DataRow rows in InvoiceLine.Rows)
+                        {
+                            int ProductID = Convert.ToInt32(rows["ProductID"]);
+                            int Quantity = Convert.ToInt32(rows["Quantity"]);
+                            int PartialTotal = Convert.ToInt32(rows["PartialTotal"]);
+                             <tr><td>@b.getStringByQuery("select * from Product where ID="+ProductID,"Name")</td><td>@Quantity</td><td>@PartialTotal</td></tr>
+                        }
+                    }
+            <tr><td colspan="2">Delivery Fee</td><td>@DeliveryFee</td></tr>
+            <tr><td colspan="3"><center>Total - @Total Kyats</center></td></tr>
+
+            <tr><td colspan="2"><h3>Customer Info</h3><hr /></td></tr>
+
+            <tr><td>Name</td><td>:@b.getStringByQuery("select * from Invoice where ID=" + InvoiceID, "CustomerName")</td></tr>
+            <tr><td>Address</td><td>@b.getStringByQuery("select * from Invoice where ID=" + InvoiceID, "CustomerAddress")</td></tr>
+            <tr><td>Township</td><td>:@b.getStringByQuery("select * from Invoice where ID=" + InvoiceID, "Township")</td></tr>
+            <tr><td>Phone</td><td>:@b.getStringByQuery("select * from Invoice where ID=" + InvoiceID, "CustomerPhone")</td></tr>
+        </table>
+    </center>
+</page>
+<style>
+    body {
+        background: rgb(204,204,204);
+        font-size: 18px;
+    }
+
+    page {
+        background: white;
+        display: block;
+        margin: 20px auto;
+        margin-bottom: 0.5cm;
+        box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+        max-width: 350px;
+    }
+
+    .zg {
+        font-family: Zawgyi-One;
+    }
+</style>

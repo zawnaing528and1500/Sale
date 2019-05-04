@@ -28,6 +28,17 @@
                         <span class="zg"><input type="datetime" name="ExpiryDate" placeholder="သက္​တမ္​း ကုန္​ဆံုးရက္​ (မထည္​့လည္​းရ)" class="form-control" id="datepicker" /></span>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <span class="zg"><input type="number" name="CostPrice" placeholder="ဝယ္​​ေစ်းထည္​့ပါ " min="100" class="form-control" required /></span>
+                    </div>
+                    <div class="col-md-3">
+                        <span class="zg"><input type="number" name="SellingPrice" placeholder="​ေရာင္​း​ေစ်းထည္​့ပါ" min="100" class="form-control" required /></span>
+                    </div>
+                    <div class="col-md-3">
+                        <span class="zg"><input type="text" name="Barcode" placeholder="ဘားကုတ္​နံပါတ္​ထည္​့ပါ" class="form-control"/></span>
+                    </div>
+                </div>
                 <br />
                 <center> <span class="zg"><input type="submit" class="btn btn-primary" value="ထည္​့မည္" /></span></center>
             </div>
@@ -67,7 +78,7 @@
                                     <td><span class="zg"> @rows["Minimum"] </span></td>
                                     <td><span class="zg"> @packing </span></td>
                                     <td>
-                                        <a href="/StockShop/DeleteProductUnit?ID=@rows["ID"]" class="label label-danger">X</a>
+                                        <a onclick="CheckForDeleteProduct(@rows["ID"])" class="label label-danger">X</a>
                                     </td>
                                 </tr>
                                 i++;
@@ -83,3 +94,13 @@
         </div>
     </p>
                             }
+<script>
+    function CheckForDeleteProduct(ID) {
+        var r = confirm("Are You Sure to Delete?");
+        if (r == true) {
+            location.href = 'http://52.74.1.203/StockShop/DeleteProductUnit?ID=' + ID;
+        } else {
+            return;
+        }
+    }
+</script>

@@ -1,0 +1,49 @@
+﻿@using EventTicket.App_Code;
+@using System.Data;
+@{
+    ViewBag.Title = "NewProductPackingForm";
+    Layout = "~/Views/Shared/StockShop.cshtml";
+    DataTable todayStock = new DataTable();
+    StockBase product = new StockBase();
+    int ShopID = Convert.ToInt32(Session["CurrentUserID"]);
+    int ProductID = Convert.ToInt32(ViewBag.ID);
+}
+
+@using (Html.BeginForm("ProcessEditProductPackingForm", "StockShop"))
+{
+    <p class="zg">
+        <div class="contentHeadBox">
+            <font color="#8B7D6B" class="zg">ပစၥည္​းအခ်က္​အလက္​မ်ားျပင္​ရန္​ ​ေအာက္​ပါတို႔ကို ျဖည္​့ပါ</font><br /><br />
+            <div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <span class="zg"><input type="text" name="Name" value="@product.getStringByQuery("select * from Product where ID="+ProductID,"Name")" class="form-control" required /></span>
+                    </div>
+                    <div class="col-md-3">
+                        <span class="zg"><input type="number" name="Quantity" value="@product.getIntByQuery("select * from Product where ID="+ProductID,"Quantity")" class="form-control" required /></span>
+                    </div>
+                    <div class="col-md-3">
+                        <span class="zg"><input type="number" name="Minimum" value="@product.getIntByQuery("select * from Product where ID="+ProductID,"Minimum")" class="form-control" required /></span>
+                    </div>
+                    <div class="col-md-3">
+                        <span class="zg"><input type="datetime" name="ExpiryDate" value="@product.getStringByQuery("select * from Product where ID="+ProductID,"ExpiryDate")" class="form-control" id="datepicker" /></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <span class="zg"><input type="number" name="CostPrice" value="@product.getIntByQuery("select * from Product where ID="+ProductID,"CostPrice")" min="100" class="form-control" required /></span>
+                    </div>
+                    <div class="col-md-3">
+                        <span class="zg"><input type="number" name="SellingPrice" value="@product.getIntByQuery("select * from Product where ID="+ProductID,"SellingPrice")" min="100" class="form-control" required /></span>
+                    </div>
+                    <div class="col-md-3">
+                        <span class="zg"><input type="text" name="Barcode" value="@product.getStringByQuery("select * from Product where ID="+ProductID,"Barcode")" class="form-control" /></span>
+                    </div>
+                </div>
+                <input type="hidden" name="ProductID" value="@ProductID" />
+                <br />
+                <center> <span class="zg"><input type="submit" class="btn btn-primary" value="ျပင္​မည္​" /></span></center>
+            </div>
+        </div>
+    </p>
+                            }

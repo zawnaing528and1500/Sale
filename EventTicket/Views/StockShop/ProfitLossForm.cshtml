@@ -1,0 +1,97 @@
+﻿
+@using EventTicket.App_Code;
+@using System.Data;
+@{
+    ViewBag.Title = "NewProductPackingForm";
+    Layout = "~/Views/Shared/StockShop.cshtml";
+    DataTable todayStock = new DataTable();
+    DataTable expense = new DataTable();
+    StockBase db = new StockBase();
+    int TotalExpense = 0;int TotalSale = 0;int TotalGrossProfit = 0;int TotalNetProfit = 0;
+    int ShopID = Convert.ToInt32(Session["CurrentUserID"]);
+}
+
+@using (Html.BeginForm("ProcessProfitLossForm", "StockShop"))
+{
+    <p class="zg">
+        <div class="contentHeadBox">
+            <font color="#8B7D6B" class="zg"><b>အရံႈးအျမတ္​ ၾကည္​့ရန္​ ​</b> ​ေအာက္​ပါတို႔ကို ျဖည္​့ပါ</font><br /><br />
+            <div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" name="FromDate" class="form-control" id="datepicker" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" name="ToDate" class="form-control" id="Todatepicker" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <center> <span class="zg"><input type="submit" class="btn btn-primary" value="ၾကည္​့မည္" /></span></center>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box-body">
+                <font color="#8B7D6B" class="zg"> သင္​​​့လုပ္​ငန္​း၏ အရံႈးအျမတ္​ ျဖစ္​သည္​။</font><br /><br />
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th><span class="zg">Total Sale</span></th>
+                            <th><span class="zg">Total Gross Profit</span></th>
+                            <th><span class="zg">Total Expense</span></th>
+                            <th><span class="zg">Total Net Profit</span></th>
+
+                        </tr>
+                        @{
+
+                            if (ViewBag.FromDate != null)
+                            {
+                                int i = 1;
+                                DataTable Expense = db.getAllByQuery("select * from Expense where ShopID=" + ShopID + " and Date>='" + ViewBag.FromDate + "' and Date<='" + ViewBag.ToDate + "'");
+                                foreach (DataRow rows in Expense.Rows)
+                                {
+                                    TotalExpense = TotalExpense + Convert.ToInt32(rows["Cost"]);
+
+                                    i++;
+                                }
+                            }
+                            if (ViewBag.FromDate != null)
+                            {
+                                int i = 1;
+                                DataTable Invoice = db.getAllByQuery("select * from Invoice where ShopID=" + ShopID + " and Date>='" + ViewBag.FromDate + "' and Date<='" + ViewBag.ToDate + "'");
+                                foreach (DataRow rows in Invoice.Rows)
+                                {
+                                    int Profit = db.getIntTotalByQuery("select * from InvoiceLine where InvoiceID=" + Convert.ToInt32(rows["ID"]), "Profit");
+                                    TotalSale = TotalSale + Convert.ToInt32(rows["TotalCost"]);
+                                    TotalGrossProfit = TotalGrossProfit + Profit;
+                                    i++;
+                                }
+                            }
+
+                            TotalNetProfit = TotalGrossProfit - TotalExpense;
+
+                        }
+                        <tr><td>@TotalSale</td><td>@TotalGrossProfit</td><td>@TotalExpense</td><td>@TotalNetProfit</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </p>
+                            }

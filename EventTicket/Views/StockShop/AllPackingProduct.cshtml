@@ -13,15 +13,22 @@
 <div class="contentHeadBox">
     <div class="box-body">
         <font color="#8B7D6B" class="zg">သင္​့ဆီတြင္​ရိွ​ေသာ (ပါကင္​အလိုက္​) ပစၥည္​းမ်ား အားလံုးျဖစ္​သည္​။</font><br /><br />
-        <table class="table table-bordered">
-            <tbody>
+        <table id="displayTable" class="table table-bordered">
+            <thead>
                 <tr>
                     <th style="width: 10px" class="hidecell">No</th>
                     <th> <span class="zg">အမည္​</span></th>
                     <th><span class="zg">လက္​က်န္</span></th>
                     <th class="hidecell"><span class="zg">အနည္​းဆံုး</span></th>
-
+                    <th><span class="zg">ဝယ္​​ေစ်း</span></th>
+                    <th><span class="zg">​ေရာင္​း​ေစ်း</span></th>
+                    <th><span class="zg">ကုန္​ဆံုးရက္​</span></th>
+                    <th class="hidecell"></th>
+                    <th class="hidecell"></th>
+                    <th class="hidecell"></th>
                 </tr>
+            </thead>
+            <tbody>
                 @{
                     int i = 1;
                     todayStock = db.getAllByQuery("select * from Product where ShopID=" + ShopID + " and Packing='True' order by Name asc");
@@ -34,8 +41,17 @@
                             </td>
                             <td><span class="zg"> @rows["Quantity"] </span></td>
                             <td class="hidecell"><span class="zg"> @rows["Minimum"] </span></td>
+                            <td>@rows["CostPrice"]</td>
+                            <td>@rows["SellingPrice"]</td>
+                            <td>@rows["ExpiryDate"]</td>
                             <td>
-                                <a href="/StockShop/DeletePackingProduct?ID=@rows["ID"]" class="label label-danger">X</a>
+                                <a onclick="CheckForDeleteProduct(@rows["ID"])" class="label label-danger">X</a>
+                            </td>
+                            <td>
+                                <a href="/StockShop/EditProductPackingForm?ID=@rows["ID"]"><img src="~/Image/edit.png" /></a>
+                            </td>
+                            <td class="hidecell">
+                                <a href="/StockShop/PrintBarcode?Barcode=@rows["Barcode"]">Print Barcode</a>
                             </td>
                         </tr>
                         i++;
@@ -43,6 +59,24 @@
                 }
             </tbody>
         </table>
-    </div>
+        <br /><br />
+        <font color="#8B7D6B" class="zg"><font color="red">*</font>ပစၥည္​းကို ဖ်က္​ပစ္​လိုက္​လ်ွင္​ ပစၥည္​းနွင္​့ဆိုင္​​ေသာ Invoice မ်ား ပ်က္​သြားပါမည္​။ ​ေရာင္​းအား ၾကည္​့​ေသာအခါတြင္​ သက္​​ေရာက္​မႈ ရိွပါမည္​။</font>
 
+    </div>
 </div>
+
+@*<script language="javascript">
+setInterval(function(){
+   window.location.reload(1);
+}, 5000);
+</script>*@
+<script>
+    function CheckForDeleteProduct(ID) {
+        var r = confirm("Are You Sure to Delete?");
+        if (r == true) {
+            location.href = 'http://52.74.1.203/StockShop/DeletePackingProduct?ID=' + ID;
+        } else {
+            return;
+        }
+    }
+</script>

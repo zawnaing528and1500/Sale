@@ -8,13 +8,13 @@
     DataTable branch = stock.getAllByQuery("select * from Branch where CentralID="+CentralID);
 
 }
-<div class="contentHeadBox">
+<div class="contentBodyBox">
     @{
         foreach (DataRow row in branch.Rows)
         {
             int ShopID = Convert.ToInt32(row["ShopID"]);
             string ShopName = stock.getStringByQuery("select * from Shop where ID=" + ShopID, "Name");
-            <a href="~/StockCentral/View?ECategoryID=@ShopID" class="hvr-wobble-vertical"><img src="~/Image/open.png" />&nbsp;&nbsp;&nbsp;&nbsp;<b>@ShopName</b></a><br />
+            <a href="~/StockCentral/ShowUsernamePassword?ShopID=@ShopID" class="hvr-wobble-vertical"><img src="~/Image/open.png" />&nbsp;&nbsp;&nbsp;&nbsp;<b>@ShopName</b></a><br />
         }
     }
 </div>

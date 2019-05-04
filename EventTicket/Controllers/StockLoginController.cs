@@ -9,6 +9,7 @@ namespace EventTicket.Controllers
 {
     public class StockLoginController : Controller
     {
+        StockDBBase stock = new StockDBBase();
         // GET: StockLogin
         public ActionResult Index()
         {
@@ -47,11 +48,15 @@ namespace EventTicket.Controllers
                 }
                 else if (AccessLevel == 2)
                 {
-                    return RedirectToAction("ShowLackPackingProduct", "StockCentral");//Central
+                    return RedirectToAction("ShowBranch", "StockCentral");//Central
                 }
                 else if (AccessLevel == 3)
                 {
-                    return RedirectToAction("OutProductPackingForm", "StockShop");//Shop
+                    return RedirectToAction("ReProductPackingForm", "StockShop");//Shop
+                }
+                else if (AccessLevel == 4)
+                {
+                    return RedirectToAction("SaleForm", "StockShop");//Shop
                 }
                 else
                 {

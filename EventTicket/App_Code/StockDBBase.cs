@@ -10,7 +10,7 @@ namespace EventTicket.App_Code
 {
     public class StockDBBase
     {
-        string connectionString = ConfigurationManager.ConnectionStrings["constrStock"].ConnectionString;
+        string connectionString = ConfigurationManager.ConnectionStrings["constrSale"].ConnectionString;
         DataTable dt;
 
         public Boolean CheckByQuery(string query)
@@ -98,7 +98,7 @@ namespace EventTicket.App_Code
         {
             DateTime name = DateTime.Now;
             DataTable dt;
-            var connectionString = ConfigurationManager.ConnectionStrings["constrStock"].ConnectionString;
+            var connectionString = ConfigurationManager.ConnectionStrings["constrSale"].ConnectionString;
 
             using (SqlConnection con = new SqlConnection(connectionString))
             {

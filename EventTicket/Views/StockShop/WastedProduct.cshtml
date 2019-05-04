@@ -1,0 +1,81 @@
+﻿
+
+@using EventTicket.App_Code;
+@using System.Data;
+@{
+    ViewBag.Title = "NewProductPackingForm";
+    Layout = "~/Views/Shared/StockShop.cshtml";
+    DataTable todayStock = new DataTable();
+    DataTable product = new DataTable();
+    StockBase db = new StockBase();
+    int ShopID = Convert.ToInt32(Session["CurrentUserID"]);
+
+}
+<div class="contentHeadBox">
+    <div class="box-body">
+        <font color="#8B7D6B" class="zg">Damage/Transfer ပစၥည္​းမ်ား အားလံုးျဖစ္​သည္​။</font><br /><br />
+        <table id="displayTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width: 10px" class="hidecell">No</th>
+                    <th> <span class="zg">အမည္​</span></th>
+                    <th><span class="zg">အ​ေရအတြက္​</span></th>
+                    <th>အမ်ဳိးအစား</th>
+                    <th class="hidecell"><span class="zg">Status</span></th>
+                    <th><span class="zg">Date</span></th>
+                    <th class="hidecell"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int i = 1; string packing = "";
+                    todayStock = db.getAllByQuery("select * from WastedProduct where ShopID=" + ShopID);
+                    foreach (DataRow rows in todayStock.Rows)
+                    {
+                        Boolean ProductPacking = db.getBooleanByQuery("select * from Product where ID="+rows["ProductID"],"Packing");
+                        if (ProductPacking == true)
+                        {
+                            packing = "ပါကင္";
+                        }
+                        else
+                        {
+                            packing = "တစ္​ခုျခင္​း";
+                        }
+                        <tr>
+                            <td class="hidecell">@i</td>
+                            <td>
+                                <span class="zg"> @db.getStringByQuery("select * from Product where ID="+Convert.ToInt32(rows["ProductID"]),"Name") </span>
+                            </td>
+                            <td><span class="zg"> @rows["Quantity"] </span></td>
+                            <td><span class="zg"> @packing</span></td>
+                            <td class="hidecell"><span class="zg"> @rows["Status"] </span></td>
+                            <td>@rows["Date"]</td>
+                            <td>
+                                <a onclick="CheckForDeleteProduct(@rows["ID"])" class="label label-danger">X</a>
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                }
+            </tbody>
+        </table>
+        <br /><br />
+        <font color="#8B7D6B" class="zg"><font color="red">*</font>Transfer သည္​ အျခားဆိုင္​သို႔ ​​ေ႐ြ႕​ေျပာင္​းလိုက္​သည္​့ ပစၥည္​း ျဖစ္​ၿပီး Damage သည္​ ပ်က္​စီးသြား​ေသာ ပစၥည္​းမ်ားျဖစ္​သည္​။</font>
+    </div>
+</div>
+
+@*<script language="javascript">
+    setInterval(function(){
+       window.location.reload(1);
+    }, 5000);
+    </script>*@
+<script>
+    function CheckForDeleteProduct(ID) {
+        var r = confirm("Are You Sure to Delete?");
+        if (r == true) {
+            location.href = 'http://52.74.1.203/StockShop/DeleteWastedProduct?ID=' + ID;
+        } else {
+            return;
+        }
+    }
+</script>

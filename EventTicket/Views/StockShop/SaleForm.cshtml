@@ -1,0 +1,321 @@
+﻿@using EventTicket.App_Code;
+@using System.Data;
+@{
+    ViewBag.Title = "SaleForm";
+    Layout = "~/Views/Shared/Cashier.cshtml";
+    StockBase db = new StockBase();
+    int ShopID = Convert.ToInt32(Session["CurrentUserID"]);
+    DataTable Product = db.getAllByQuery("select * from Product where ShopID=" + ShopID+" and Quantity > 0");
+}
+
+<div class="contentHeadBox">
+    <font color="#8B7D6B" class="zg">ပစၥည္​းနာမည္​ သို႔မဟုတ္​ Barcode ထည္​့ပါ</font><br /><br />
+    <div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <span class="zg">
+                        <select id="ProductID" name="ID" class="form-control select2" style="width: 100%;" required autofocus="autofocus">
+                            <option value=""></option>
+                            @{
+                                foreach (DataRow rows in Product.Rows)
+                                {
+                                    <option value="@rows["ID"]"><span class="zg">@rows["Name"] {@rows["Barcode"]}</span></option>
+
+                                }
+                            }
+                        </select>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-3"><span class="zg"><input type="number" id="Quantity" name="Quantity" placeholder="Count​​​" min="1" class="form-control" required /></span></div>
+                    <div class="col-md-3"><center> <span class="zg"><input type="button" class="btn btn-primary" value="ထုတ္​မည္​​" onclick="ChooseProduct()" /></span></center></div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <b><span id="error" style="color:palevioletred"></span></b>
+    </div>
+</div>
+<p id="SelectedProduct"></p>
+<br />
+@using (Html.BeginForm("ProcessSaleForm", "StockShop"))
+{
+    <div class="contentHeadBox">
+        <div class="zg">
+                <div class="row">
+                    <input type="hidden" id="HSelectedProductID" name="SelectedProductID" />
+                    <input type="hidden" id="HSelectedProductQuantity" name="SelectedProductQuantity" />
+                    <input type="hidden" id="HPartialTotal" name="PartialTotal" />
+                    <input type="hidden" id="HTotalCost" name="TotalCost" />
+
+                    
+                        @{
+                            if (db.CheckByQuery("select * from Shop where ID=" + ShopID + " and OnlineShopping='True'"))
+                            {
+                                <font color="#8B7D6B" class="zg">Online Shopping ဆိုလ်ွင္​ ​ေအာက္​ပါတို႔ကို ျဖည္​့ပါ၊ မျဖည္​့လည္​း ရပါသည္​။</font><br /><br />
+                                <center>
+                                    <div class="row">
+                                        <div class="col-md-3"><span class="zg"><input type="text" name="Name" placeholder="Name​​​" class="form-control"/></span></div>
+                                        <div class="col-md-3"><span class="zg"><input type="text" name="Address" placeholder="Address​​​" class="form-control"/></span></div>
+                                        <div class="col-md-2"><span class="zg"><input type="text" name="Phone" placeholder="Phone​​​" class="form-control"/></span></div>
+                                        <div class="col-md-2"><span class="zg"><input type="text" name="Township" placeholder="Township​​​" class="form-control"/></span></div>
+                                        <div class="col-md-2"><span class="zg"><input type="text" name="DeliveryFee" placeholder="Delivery Fee​​​" value="0" class="form-control"/></span></div>
+                                    </div>
+                                </center>
+                            }
+                        }
+
+                                    <br />
+                    <center><input type="submit" value="SELL" class="btn btn-primary" /></center>
+
+                                
+</div>
+       </div>
+   </div>
+}
+
+
+                <!--Get Product Name. That will be putting back to JS Array-->
+                <p id="productid" style="opacity:0;">
+                    <!--Save (1) SeatID (2) Name, Phone Here-->
+                    @{
+                        foreach (DataRow row in Product.Rows)
+                        {
+                            string ID = row["ID"].ToString();
+                            ID = ID + ",";
+                            @ID
+                        }
+                    }
+                </p>
+                <p id="ProductName" style="opacity:0;">
+                    <!--Save (1) SeatID (2) Name, Phone Here-->
+                    @{
+                        foreach (DataRow row in Product.Rows)
+                        {
+                            string Name = row["Name"].ToString();
+                            Name = Name + ",";
+                            @Name
+                        }
+                    }
+                </p>
+                <!--Get Product Barcode. That will be putting back to JS Array-->
+                <p id="Barcode" style="opacity:0;">
+                    @{
+                        foreach (DataRow row in Product.Rows)
+                        {
+                            string Barcode = row["Barcode"].ToString();
+                            Barcode = Barcode + ",";
+                            @Barcode
+                        }
+                    }
+                </p>
+                <p id="SellingPrice" style="opacity:0;">
+                    @{
+                        foreach (DataRow row in Product.Rows)
+                        {
+                            string SellingPrice = row["SellingPrice"].ToString();
+                            SellingPrice = SellingPrice + ",";
+                            @SellingPrice
+                        }
+                    }
+                </p>
+                <p id="Packing" style="opacity:0;">
+                    @{
+                        foreach (DataRow row in Product.Rows)
+                        {
+                            string Packing = row["Packing"].ToString();
+                            Packing = Packing + ",";
+                            @Packing
+                        }
+                    }
+                </p>
+                <p id="LeftQuantity" style="opacity:0;">
+                    @{
+                        foreach (DataRow row in Product.Rows)
+                        {
+                            string Quantity = row["Quantity"].ToString();
+                            Quantity = Quantity + ",";
+                            @Quantity
+                        }
+                    }
+                </p>
+
+                <!--Processing of Inntext to Array-->
+                <script>
+                    //Product Fields
+                    var ProductID = new Array();
+                    var ProductName = new Array();
+                    var Barcode = new Array();
+                    var SellingPrice = new Array();
+                    var Packing = new Array();
+                    var LeftQuantity = new Array();
+
+                    var SelectedProductID = new Array();
+                    var SelectedQuantity = new Array();
+                    var SelectedPartialTotal = new Array();
+
+                    $(document).ready(function () {
+                        var productID = document.getElementById("productid").innerText;
+                        ProductID = productID.split(",");
+                        ProductID.splice((ProductID.length) - 1, 1);
+
+                        var productName = document.getElementById("ProductName").innerText;
+                        ProductName = productName.split(",");
+                        ProductName.splice((ProductName.length) - 1, 1);
+
+                        var barcode = document.getElementById("Barcode").innerText;
+                        Barcode = barcode.split(",");
+                        Barcode.splice((Barcode.length) - 1, 1);
+
+                        var sellingPrice = document.getElementById("SellingPrice").innerText;
+                        SellingPrice = sellingPrice.split(",");
+                        SellingPrice.splice((SellingPrice.length) - 1, 1);
+
+                        var packing = document.getElementById("Packing").innerText;
+                        Packing = packing.split(",");
+                        Packing.splice((Packing.length) - 1, 1);
+
+                        var quantity = document.getElementById("LeftQuantity").innerText;
+                        LeftQuantity = quantity.split(",");
+                        LeftQuantity.splice((LeftQuantity.length) - 1, 1);
+                    })
+
+                    function ChooseProduct() {
+                        var e = document.getElementById("ProductID");
+                        var ProductID = e.options[e.selectedIndex].value;
+                        var Quantity = document.getElementById("Quantity").value;
+                        if (Quantity == "" || ProductID == "") {
+                            alert("Fill Textbox");
+                        }
+                        else {
+                            SelectDeselect(ProductID, Quantity);
+                        }
+                    }
+
+                    function SelectDeselect(ID, Quantity) {
+                        var innerIndex = SelectedProductID.indexOf(ID);
+                        if (innerIndex > -1) {
+                            SelectedProductID.splice(innerIndex, 1);
+                            SelectedQuantity.splice(innerIndex, 1);
+                            SelectedPartialTotal.splice(innerIndex, 1);
+                            ShowSelectedProduct();
+                        }
+                        else {
+                            if (parseInt(GetQuantity(ID)) < parseInt(Quantity)) {
+                                document.getElementById("error").innerText = "​ေရာင္​းမည္​ အ​ေရအတြက္​မလံု​ေလာက္​ပါ။ လက္​က်န္​-" + GetQuantity(ID);
+                                return;
+                            }
+                            document.getElementById("error").innerText = "";
+
+                            SelectedProductID.push(ID);
+                            SelectedQuantity.push(Quantity);
+                            var PartialTotal = parseInt(Quantity) * parseInt(GetPrice(ID));
+                            SelectedPartialTotal.push(PartialTotal);
+                            ShowSelectedProduct();
+                        }
+                        return;
+                    }
+
+                    function ShowSelectedProduct() {
+                        var TotalPrice = 0;
+                        if (SelectedProductID.length > 0) {
+                            var table = "<div class='contentBodyBox'><div class='box-body'><table class='table table-bordered' style='background-color:#F6F9ED;'><tr><th>Name</th><th>Quantity</th><th>Type</th><th>Price</th><th colspan='2' class='hidecell'>Total</th></tr>";
+                            for (var i = 0 ; i < SelectedProductID.length ; i++) {
+                                PartialTotal = parseInt(SelectedQuantity[i]) * parseInt(GetPrice(SelectedProductID[i]));
+                                table = table + "<tr><td>" + GetProductName(SelectedProductID[i]) + "</td><td>" + SelectedQuantity[i] + "</td><td class='hidecell'>" + GetPacking(SelectedProductID[i]) + "</td><td>" + GetPrice(SelectedProductID[i]) + "</td><td class='hidecell'>" + PartialTotal + "</td><td><a href='#'><span onclick=\"SelectDeselect(\'" + SelectedProductID[i] + "\',\'" + SelectedQuantity[i] + "\')\">❎</span></a></td></tr>";
+                                TotalPrice = parseInt(TotalPrice) + PartialTotal;
+                            }
+
+                            table = table + "<tr><td>Total</td><td colspan='2'>" + TotalPrice + "&nbsp;&nbsp;&nbsp;Kyats</td></tr></table></div></div>";
+
+                            document.getElementById("SelectedProduct").innerHTML = table;
+                            SetToHidden();
+                            document.getElementById("HTotalCost").value = TotalPrice;
+
+                            //alert(document.getElementById("HSelectedProductID").value + " and " + document.getElementById("HSelectedProductQuantity").value + " and " + document.getElementById("HPartialTotal").value);
+                        }
+                        else {
+                            document.getElementById("SelectedProduct").innerHTML = "";
+                        }
+                    }
+
+                    //Text Box Name
+                    //<input type="hidden" id="HSelectedProductID" name="SelectedProductID" />
+                    //<input type="hidden" id="HSelectedProductQuantity" name="SelectedProductQuantity" />
+                    //<input type="hidden" id="HPartialTotal" name="PartialTotal" />
+                    //<input type="hidden" id="HTotalCost" name="TotalCost" />
+
+                    //Array Name
+                    //var SelectedProductID = new Array();
+                    //var SelectedQuantity = new Array();
+                    //var SelectedPartialTotal = new Array();
+
+
+                    //Set to Hidden
+                    function SetToHidden() {
+                        ForHSelectedProductID();
+                        ForHSelectedProductQuantity();
+                        ForHPartialTotal();
+                    }
+                    function ForHSelectedProductID() {
+                        var Name = "";
+                        for (var i = 0 ; i < SelectedProductID.length ; i++) {
+                            Name = Name + "," + SelectedProductID[i];
+                        }
+                        document.getElementById("HSelectedProductID").value = Name;
+                    }
+                    function ForHSelectedProductQuantity() {
+                        var Name = "";
+                        for (var i = 0 ; i < SelectedQuantity.length ; i++) {
+                            Name = Name + "," + SelectedQuantity[i];
+                        }
+                        document.getElementById("HSelectedProductQuantity").value = Name;
+                    }
+                    function ForHPartialTotal() {
+                        var Name = "";
+                        for (var i = 0 ; i < SelectedPartialTotal.length ; i++) {
+                            Name = Name + "," + SelectedPartialTotal[i];
+                        }
+                        document.getElementById("HPartialTotal").value = Name;
+                    }
+
+                    
+                    //All Get Function
+                    function GetProductName(productid) {
+                        var index = ProductID.indexOf(productid);
+                        if (index > -1) {
+                            return ProductName[index];
+                        }
+                    }
+
+                    function GetPrice(productid) {
+                        var index = ProductID.indexOf(productid);
+                        if (index > -1) {
+                            return SellingPrice[index];
+                        }
+                    }
+
+                    function GetQuantity(productid) {
+                        var index = ProductID.indexOf(productid);
+                        if (index > -1) {
+                            return LeftQuantity[index];
+                        }
+                    }
+
+                    function GetPacking(productid) {
+                        var index = ProductID.indexOf(productid);
+                        if (index > -1) {
+                            if (Packing[index] == 'True') {
+                                return "ပါကင္​";
+                            }
+                            else {
+                                return "တစ္​ခုျခင္​း";
+                            }
+                        }
+                    }
+
+
+                </script>

@@ -1,0 +1,30 @@
+﻿@using EventTicket.App_Code;
+@using System.Data;
+@{
+    ViewBag.Title = "ShowBranch";
+    Layout = "~/Views/Shared/StockCentral.cshtml";
+    StockBase stock = new StockBase();
+    int ShopID = Convert.ToInt32(ViewBag.ShopID);
+    DataTable LackPackingProduct = stock.getAllByQuery("select * from Product where ShopID="+ShopID+" and Packing='True' and Quantity<= Minimum");
+
+}
+<div class="contentBodyBox">
+    <table class="table no-margin">
+        <tr><th>No</th><th>Name</th><th>Current</th><th>Minimum Level</th></tr>
+        @{
+            int i = 1;
+            foreach (DataRow row in LackPackingProduct.Rows)
+            {
+                int ID = Convert.ToInt32(row["ID"]);
+                <tr>
+                    <td>@i</td>
+                    <td>@row["Name"]</td>
+                    <td>@row["Quantity"]</td>
+                    <td>@row["Minimum"]</td>
+                </tr>
+                i++;
+            }
+        }
+    </table>
+</div>
+

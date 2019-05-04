@@ -1,0 +1,30 @@
+﻿@using EventTicket.App_Code;
+@using System.Data;
+@{
+    ViewBag.Title = "ShowBranch";
+    Layout = "~/Views/Shared/StockCentral.cshtml";
+    StockBase stock = new StockBase();
+    int ShopID = Convert.ToInt32(ViewBag.ShopID);
+    DataTable ExpiryPackingProduct = stock.getAllByQuery("select * from Product where ShopID=" + ShopID + " and ExpiryDate<='" + DateTime.Now + "' and ExpiryDate != '1900-01-01 00:00:00.000' and Packing='True'");
+
+}
+<div class="contentBodyBox">
+    <table class="table no-margin">
+        <tr><th>No</th><th>Name</th><th>Number</th><th>Expiry Date</th></tr>
+        @{
+            int i = 1;
+            foreach (DataRow row in ExpiryPackingProduct.Rows)
+            {
+                int ID = Convert.ToInt32(row["ID"]);
+                <tr>
+                    <td>@i</td>
+                    <td>@row["Name"]</td>
+                    <td>@row["Quantity"]</td>
+                    <td>@row["ExpiryDate"]</td>
+                </tr>
+                i++;
+            }
+        }
+    </table>
+</div>
+

@@ -1,0 +1,24 @@
+﻿@using EventTicket.App_Code;
+@using System.Data;
+@{
+    ViewBag.Title = "SetOnlineShoppingMode";
+    Layout = "~/Views/Shared/StockShop.cshtml";
+    StockBase b = new StockBase();
+    int ShopID = Convert.ToInt32(Session["CurrentUserID"]);
+    string mode = "";
+    if(b.CheckByQuery("select * from Shop where ID=" + ShopID+" and OnlineShopping='True'"))
+    {
+        mode = "ON";
+    }
+    else
+    {
+        mode = "OFF";
+    }
+}
+<div class="contentHeadBox">
+    <font color="#8B7D6B" class="zg">Online Shopping Mode is <font color="green"><b>@mode</b></font></font><br /><br />
+    @using (Html.BeginForm("ProcessSetOnlineShoppingMode", "StockShop"))
+    {
+        <center> <span class="zg"><input type="submit" class="btn btn-primary" value="ON/OFF" /></span></center>
+    }
+</div>
